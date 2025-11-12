@@ -110,7 +110,7 @@ void matchMenu(const User &me);
 void chatMenu(const string &me);
 
 User findUser(string uname)
-{
+{  
     vector<User> all = User::loadAll();
     for (auto &x : all)
         if (x.username == uname)
