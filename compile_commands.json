@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "c:/Users/Nakul/Desktop/EVERYTHING/Code/C++/PROJECT/Dating-App-Simulator",
+    "command": "g++ -std=c++17 -c main.cpp -o main.exe",
+    "file": "main.cpp"
+  }
+]
