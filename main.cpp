@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 class Utility
@@ -34,6 +36,30 @@ public:
         cout << "Press enter to continue\n";
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
+
+    static string getRandomReply()
+    {
+        vector<string> replies = {
+            "Haha that's funny!",
+            "Really? Tell me more!",
+            "I see what you mean",
+            "That's interesting!",
+            "Wow, didn't expect that",
+            "Cool!",
+            "Nice to hear that",
+            "That's awesome!",
+            "I totally agree",
+            "Lol same here",
+            "No way!",
+            "That's great!",
+            "Sounds good to me",
+            "I feel you",
+            "Absolutely!",
+            "Makes sense",
+            "Oh really?",
+            "That's so cool!"};
+        return replies[rand() % replies.size()];
+    }
 };
 
 class User
@@ -44,15 +70,21 @@ public:
     string gender;
     string preference;
     string bio;
+    string branch;
+    string age;
+    string year;
 
     User() {}
-    User(string u, string p, string g, string pref, string b)
+    User(string u, string p, string g, string pref, string b, string br = "", string ag = "", string yr = "")
     {
         username = u;
         password = p;
         gender = g;
         preference = pref;
         bio = b;
+        branch = br;
+        age = ag;
+        year = yr;
     }
 
     bool save()
@@ -60,7 +92,7 @@ public:
         ofstream f("data/users.txt", ios::app);
         if (!f)
             return false;
-        f << username << '|' << password << '|' << gender << '|' << preference << '|' << bio << "\n";
+        f << username << '|' << password << '|' << gender << '|' << preference << '|' << bio << '|' << branch << '|' << age << '|' << year << "\n";
         f.close();
         return true;
     }
@@ -77,7 +109,10 @@ public:
             vector<string> parts = Utility::split(line, '|');
             if (parts.size() >= 5)
             {
-                User u(parts[0], parts[1], parts[2], parts[3], parts[4]);
+                string br = (parts.size() > 5) ? parts[5] : "";
+                string ag = (parts.size() > 6) ? parts[6] : "";
+                string yr = (parts.size() > 7) ? parts[7] : "";
+                User u(parts[0], parts[1], parts[2], parts[3], parts[4], br, ag, yr);
                 out.push_back(u);
             }
         }
@@ -102,6 +137,12 @@ public:
         cout << "Gender: " << gender << "\n";
         cout << "Preference: " << preference << "\n";
         cout << "Bio: " << bio << "\n";
+        if (!branch.empty())
+            cout << "Branch/Stream: " << branch << "\n";
+        if (!age.empty())
+            cout << "Age: " << age << "\n";
+        if (!year.empty())
+            cout << "Year: " << year << "\n";
     }
 };
 
@@ -110,7 +151,7 @@ void matchMenu(const User &me);
 void chatMenu(const string &me);
 
 User findUser(string uname)
-{  
+{
     vector<User> all = User::loadAll();
     for (auto &x : all)
         if (x.username == uname)
@@ -120,7 +161,7 @@ User findUser(string uname)
 
 void registerFlow()
 {
-    string u, p, g, pref, b;
+    string u, p, g, pref, b, br, ag, yr;
     cout << "Enter username: ";
     getline(cin, u);
     cout << "Enter password: ";
@@ -131,7 +172,13 @@ void registerFlow()
     getline(cin, pref);
     cout << "Enter a short bio: ";
     getline(cin, b);
-    User newu(u, p, g, pref, b);
+    cout << "Enter branch/stream (e.g., Computer Science, Engineering, Arts): ";
+    getline(cin, br);
+    cout << "Enter age: ";
+    getline(cin, ag);
+    cout << "Enter year (1st/2nd/3rd/4th): ";
+    getline(cin, yr);
+    User newu(u, p, g, pref, b, br, ag, yr);
     bool ok = newu.save();
     if (ok)
         cout << "Registered " << u << "\n";
@@ -186,6 +233,7 @@ void loginFlow()
 
 int main()
 {
+    srand(time(0)); // Initialize random seed for varied responses
     while (true)
     {
         cout << "1 Register\n2 Login\n3 Exit\nChoose: ";
@@ -350,7 +398,7 @@ void chatMenu(const string &me)
             break;
         saveMessage(me, partner, msg);
         cout << me << ": " << msg << "\n";
-        string reply = "ok";
+        string reply = Utility::getRandomReply();
         saveMessage(partner, me, reply);
         cout << partner << ": " << reply << "\n";
     }

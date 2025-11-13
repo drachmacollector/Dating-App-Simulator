@@ -1,0 +1,6 @@
+nakul|afrah|hello how are you
+afrah|nakul|ok
+nakul|afrah|are you okay
+afrah|nakul|ok
+nakul|afrah|where are you
+afrah|nakul|ok
